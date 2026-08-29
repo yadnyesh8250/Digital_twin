@@ -8,7 +8,18 @@ Basic engine rotational dynamics simulation.
 import os
 import sys
 
-from engine.dynamics import EngineDynamics
+_current_dir = os.path.dirname(os.path.abspath(__file__))
+_aerotwin_dir = os.path.dirname(_current_dir)
+_root_dir = os.path.dirname(_aerotwin_dir)
+
+for _p in [_current_dir, _aerotwin_dir, _root_dir]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+try:
+    from engine.dynamics import EngineDynamics
+except ImportError:
+    from AeroTwin.phase1.engine.dynamics import EngineDynamics
 
 try:
     import matplotlib.pyplot as plt

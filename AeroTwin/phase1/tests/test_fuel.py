@@ -2,10 +2,24 @@
 Unit tests for AeroTwin-4 Fuel Subsystem Model.
 """
 
+import os
+import sys
 import unittest
 import numpy as np
 
-from engine.fuel import FuelModel
+_test_dir = os.path.dirname(os.path.abspath(__file__))
+_phase1_dir = os.path.dirname(_test_dir)
+_aerotwin_dir = os.path.dirname(_phase1_dir)
+_root_dir = os.path.dirname(_aerotwin_dir)
+
+for _p in [_phase1_dir, _aerotwin_dir, _root_dir]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+try:
+    from engine.fuel import FuelModel
+except ImportError:
+    from AeroTwin.phase1.engine.fuel import FuelModel
 
 
 class TestFuelModel(unittest.TestCase):

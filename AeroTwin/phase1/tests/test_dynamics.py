@@ -2,12 +2,27 @@
 Unit tests for AeroTwin-4 engine rotational dynamics & physics validation.
 """
 
-import math
+import os
+import sys
 import unittest
+import math
 import numpy as np
 
-from engine.dynamics import EngineDynamics
-from engine.parameters import ENGINE
+_test_dir = os.path.dirname(os.path.abspath(__file__))
+_phase1_dir = os.path.dirname(_test_dir)
+_aerotwin_dir = os.path.dirname(_phase1_dir)
+_root_dir = os.path.dirname(_aerotwin_dir)
+
+for _p in [_phase1_dir, _aerotwin_dir, _root_dir]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+try:
+    from engine.dynamics import EngineDynamics
+    from engine.parameters import ENGINE
+except ImportError:
+    from AeroTwin.phase1.engine.dynamics import EngineDynamics
+    from AeroTwin.phase1.engine.parameters import ENGINE
 
 
 class TestEngineDynamics(unittest.TestCase):

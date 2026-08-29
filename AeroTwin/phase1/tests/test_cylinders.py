@@ -2,12 +2,27 @@
 Unit tests for AeroTwin-4 four-cylinder combustion torque model.
 """
 
+import os
+import sys
 import math
 import unittest
 import numpy as np
 
-from engine.cylinders import FourCylinderModel
-from engine.dynamics import EngineDynamics
+_test_dir = os.path.dirname(os.path.abspath(__file__))
+_phase1_dir = os.path.dirname(_test_dir)
+_aerotwin_dir = os.path.dirname(_phase1_dir)
+_root_dir = os.path.dirname(_aerotwin_dir)
+
+for _p in [_phase1_dir, _aerotwin_dir, _root_dir]:
+    if _p not in sys.path:
+        sys.path.insert(0, _p)
+
+try:
+    from engine.cylinders import FourCylinderModel
+    from engine.dynamics import EngineDynamics
+except ImportError:
+    from AeroTwin.phase1.engine.cylinders import FourCylinderModel
+    from AeroTwin.phase1.engine.dynamics import EngineDynamics
 
 
 class TestFourCylinderModel(unittest.TestCase):
