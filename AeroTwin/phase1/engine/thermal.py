@@ -23,7 +23,7 @@ class ThermalModel:
         self.egt = ambient_temp + 600.0  # Initial target EGT
         self.oil_temp = oil_init
 
-    def update(self, throttle, rpm, mean_torque, dt=0.001):
+    def update(self, throttle, rpm, mean_torque, dt=0.001, cooling_efficiency=1.0):
         """
         Advance thermal dynamics by time step dt.
 
@@ -37,12 +37,15 @@ class ThermalModel:
             Mean engine torque in N*m.
         dt : float
             Time step in seconds.
+        cooling_efficiency : float
+            Cooling system heat dissipation efficiency in [0.5, 1.0]. Default is 1.0 (healthy).
 
         Returns
         -------
         dict
             Thermal state dictionary containing cht, egt, oil_temperature (°C).
         """
+        cooling_efficiency = max(0.1, min(1.0, float(cooling_efficiency)))
         omega = rpm * 2.0 * math.pi / 60.0
 
         # Mechanical power generated (kW)
@@ -53,8 +56,8 @@ class ThermalModel:
         q_gen_cht = 0.85 * power_kw + 2.5 * throttle
 
         # Cooling heat dissipation Q_cool (kW)
-        # Cooling airflow increases with RPM / airspeed
-        cooling_factor = 0.04 + 0.00015 * rpm
+        # Cooling airflow increases with RPM / airspeed, scaled by cooling_efficiency
+        cooling_factor = (0.04 + 0.00015 * rpm) * cooling_efficiency
         q_cool_cht = cooling_factor * (self.cht - self.ambient_temp)
 
         # CHT energy balance: C_cht * d(CHT)/dt = Q_gen - Q_cool

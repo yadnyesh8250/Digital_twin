@@ -79,7 +79,7 @@ class FourCylinderModel:
 
         return total_sum / steps
 
-    def calculate_torques(self, crank_angle_deg, mean_torque):
+    def calculate_torques(self, crank_angle_deg, mean_torque, combustion_efficiencies=None):
         """
         Calculate instantaneous individual cylinder torques and total torque.
 
@@ -89,6 +89,9 @@ class FourCylinderModel:
             Current crankshaft angle in degrees [0, 720).
         mean_torque : float
             Mean engine torque capability (N*m) from throttle and RPM.
+        combustion_efficiencies : Dict[int, float], optional
+            Efficiency factor per cylinder {1: e1, 2: e2, 3: e3, 4: e4} in [0.5, 1.0].
+            Default is 1.0 (healthy) for all cylinders.
 
         Returns
         -------
@@ -96,10 +99,14 @@ class FourCylinderModel:
             Dictionary of cylinder torques {1: T1, 2: T2, 3: T3, 4: T4}
             and total instantaneous engine torque.
         """
+        if combustion_efficiencies is None:
+            combustion_efficiencies = {1: 1.0, 2: 1.0, 3: 1.0, 4: 1.0}
+
         raw_torques = {}
         for cyl_id, offset in self.phase_offsets.items():
             local_angle = (crank_angle_deg + offset) % 720.0
-            raw_torques[cyl_id] = self.single_cylinder_normalized_torque(local_angle)
+            eff = combustion_efficiencies.get(cyl_id, 1.0)
+            raw_torques[cyl_id] = self.single_cylinder_normalized_torque(local_angle) * eff
 
         # Scale factor so that cycle-averaged total torque equals mean_torque
         scale = mean_torque / self._mean_normalized_torque if self._mean_normalized_torque > 0 else 0.0

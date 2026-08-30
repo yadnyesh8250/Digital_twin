@@ -125,12 +125,13 @@ class EngineDynamics:
     # Mechanical friction
     # ---------------------------------------------------------
 
-    def calculate_friction_torque(self, friction_multiplier=1.0):
+    def calculate_friction_torque(self, friction_multiplier=1.0, bearing_friction_multiplier=1.0):
         """
-        Rotational mechanical friction model, scaled by oil viscosity/temperature.
+        Rotational mechanical friction model, combining oil fluid viscosity friction factor
+        and mechanical bearing dry/boundary friction factor.
         """
 
-        coefficient = self.params["friction_coefficient"] * friction_multiplier
+        coefficient = self.params["friction_coefficient"] * friction_multiplier * bearing_friction_multiplier
 
         return coefficient * self.omega
 
@@ -149,7 +150,15 @@ class EngineDynamics:
     # Simulation update
     # ---------------------------------------------------------
 
-    def update(self, throttle, dt=None):
+    def update(
+        self,
+        throttle,
+        dt=None,
+        combustion_efficiencies=None,
+        bearing_friction_multiplier=1.0,
+        cooling_efficiency=1.0,
+        lubrication_efficiency=1.0,
+    ):
         """
         Advance engine state by one simulation time step across all physical subsystems.
 
@@ -157,14 +166,21 @@ class EngineDynamics:
         ----------
         throttle : float
             Value between 0 and 1.
-
         dt : float
             Simulation time step in seconds.
+        combustion_efficiencies : Dict[int, float], optional
+            Per-cylinder combustion efficiency dict. Default is healthy (1.0 for all cylinders).
+        bearing_friction_multiplier : float, optional
+            Bearing mechanical friction multiplier (>= 1.0). Default is 1.0 (healthy).
+        cooling_efficiency : float, optional
+            Cooling system heat dissipation efficiency in [0.5, 1.0]. Default is 1.0 (healthy).
+        lubrication_efficiency : float, optional
+            Oil subsystem efficiency in [0.5, 1.0]. Default is 1.0 (healthy).
 
         Returns
         -------
         dict
-            12-channel canonical telemetry payload.
+            Canonical multi-channel telemetry payload.
         """
 
         if dt is None:
@@ -181,7 +197,9 @@ class EngineDynamics:
 
         # 3. Four-cylinder instantaneous torque calculation
         cylinder_torques, engine_torque = self.cylinder_model.calculate_torques(
-            self.crank_angle, mean_engine_torque
+            self.crank_angle,
+            mean_engine_torque,
+            combustion_efficiencies=combustion_efficiencies,
         )
 
         # 4. Load torque
@@ -192,19 +210,22 @@ class EngineDynamics:
             throttle=throttle,
             rpm=rpm,
             mean_torque=mean_engine_torque,
-            dt=dt
+            dt=dt,
+            cooling_efficiency=cooling_efficiency,
         )
 
-        # 6. Lubrication subsystem update (coupled to oil_temperature)
+        # 6. Lubrication subsystem update (coupled to oil_temperature & lubrication_efficiency)
         oil_state = self.lubrication_model.update(
             rpm=rpm,
             oil_temperature=thermal_state["oil_temperature"],
-            dt=dt
+            dt=dt,
+            lubrication_efficiency=lubrication_efficiency,
         )
 
-        # 7. Friction torque (scaled by oil viscosity / temp)
+        # 7. Friction torque (scaled by oil viscosity / temp and bearing mechanical degradation)
         friction_torque = self.calculate_friction_torque(
-            friction_multiplier=oil_state["friction_multiplier"]
+            friction_multiplier=oil_state["friction_multiplier"],
+            bearing_friction_multiplier=bearing_friction_multiplier,
         )
 
         # 8. Net torque (instantaneous engine torque - load - friction)
