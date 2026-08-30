@@ -11,11 +11,13 @@
 | **Phase 1** | Engine Mathematical Model & Physics Subsystems | **LOCKED** ✅ | 23 / 23 Tests Passed |
 | **Phase 2 & 2.1** | Real-Time Engine Runtime & Canonical Telemetry | **LOCKED** ✅ | 13 / 13 Tests Passed |
 | **Phase 3** | Degradation Physics & Ground-Truth Dataset Pipeline | **LOCKED** ✅ | 11 / 11 Tests Passed |
-| **Total** | Integrated Test Suite Baseline | **LOCKED** ✅ | **47 / 47 Tests Passed (100%)** |
+| **Phase 4** | Digital Twin State Engine & Residual Generation | **LOCKED** ✅ | 12 / 12 Tests Passed |
+| **Phase 5 & 5.1** | Physics-Informed Anomaly Detection & Numerical Validation | **LOCKED** ✅ | 11 / 11 Tests Passed |
+| **Total** | Integrated Test Suite Baseline | **LOCKED** ✅ | **70 / 70 Tests Passed (100%)** |
 
 ---
 
-## 🛠️ Implemented Functionalities (Phases 1–3)
+## 🛠️ Implemented Functionalities (Phases 1–5.1)
 
 ### 1. Phase 1 — Engine Mathematical Model & Subsystems
 - **Crankshaft Rotational Dynamics**: Rotational dynamics differential equation:
@@ -26,46 +28,49 @@
 - **4-Cylinder 4-Stroke Combustion Model**: $720^\circ$ crank angle cycle tracking, firing order **1-3-4-2**, cylinder phase offsets ($0^\circ, 180^\circ, 360^\circ, 540^\circ$), exact cycle-mean torque conservation.
 - **Thermal Subsystem**: Lumped energy-balance differential equations ($C \frac{dT}{dt} = Q_{\text{gen}} - Q_{\text{cool}}$) for Cylinder Head Temperature (CHT), Exhaust Gas Temperature (EGT), and Oil Temperature.
 - **Lubrication Subsystem**: Engine-driven oil pump, pressure relief valve, oil temperature viscosity friction factor coupling.
-- **Fuel Subsystem**: Brake Specific Fuel Consumption (BSFC) mass flow rate ($\text{kg/s}$ & $\text{L/h}$) and regulated fuel pressure.
-- **Mechanical Vibration Subsystem**: High-frequency RMS vibration derived from instantaneous torque fluctuation $|T_{\text{instant}} - T_{\text{mean}}|$ and rotational speed imbalance.
+- **Fuel Subsystem**: BSFC fuel flow rate ($\text{kg/s}$ & $\text{L/h}$) and regulated fuel pressure.
+- **Mechanical Vibration Subsystem**: RMS vibration derived from instantaneous torque fluctuation $|T_{\text{instant}} - T_{\text{mean}}|$ and rotational speed imbalance.
 
 ---
 
 ### 2. Phase 2 & 2.1 — Real-Time Engine Runtime & Telemetry System
-- **Independent Simulation Clock (`SimulationClock`)**: Decouples simulation time $t$, step count, and step size $dt$ ($10\text{ms}$ / $100\text{ Hz}$).
+- **Simulation Clock (`SimulationClock`)**: Decouples simulation time $t$, step count, and step size $dt$ ($10\text{ms}$ / $100\text{ Hz}$).
 - **Engine Runner (`EngineRunner`)**: State machine managing lifecycle states (`STOPPED`, `RUNNING`, `PAUSED`), deterministic random seeds (`seed=42`), dynamic manual input overrides.
-- **Dual-Mode Execution Semantics**:
-  1. **Real-Time $1\times$ Playback Mode (`run_realtime`)**: Synchronized wall-clock pacing for live streaming to downstream APIs (WebSocket / React dashboard).
-  2. **Fast Batch Computation Mode (`run_for`)**: High-throughput calculation rate (~70 kHz) for offline dataset generation.
-- **Operating Modes & Mission Profiles (`FlightProfile`)**: Configurable mission profiles transitioning across `IDLE`, `TAXI`, `TAKEOFF`, `CLIMB`, `CRUISE`, `DESCENT`.
-- **Canonical Multi-Channel Telemetry (`EngineTelemetry`)**: Standardized 25-field data contract including:
-  - Time & Scenario: `timestamp`, `simulation_time`, `engine_id`, `operating_mode`
-  - Motion: `throttle`, `rpm`, `crank_angle`
-  - Torques: `mean_torque`, `instant_torque`, `load_torque`, `friction_torque`, `net_torque`
-  - **Per-Cylinder Torques**: `cylinder_1_torque`, `cylinder_2_torque`, `cylinder_3_torque`, `cylinder_4_torque`
-  - Subsystem Sensors: `cht`, `egt`, `oil_temperature`, `oil_pressure`, `oil_pressure_psi`, `fuel_flow`, `fuel_flow_lph`, `fuel_pressure`, `vibration`
-- **Telemetry Exporter (`TelemetryExporter`)**: Automated CSV & Parquet telemetry logging.
+- **Dual-Mode Execution Semantics**: Real-time $1\times$ wall-clock playback and high-throughput batch simulation (~70 kHz).
+- **Operating Modes & Mission Profiles (`FlightProfile`)**: Mission profiles across `IDLE`, `TAXI`, `TAKEOFF`, `CLIMB`, `CRUISE`, `DESCENT`.
+- **Canonical Telemetry (`EngineTelemetry`)**: Standardized 25-field data contract including per-cylinder torques ($C_1, C_2, C_3, C_4$).
 
 ---
 
 ### 3. Phase 3 — Degradation Physics & Ground-Truth Dataset Pipeline
 - **Physics-Injected Degradation Mechanisms**:
-  - **D1 Cylinder Combustion Degradation**: `combustion_efficiencies` dictionary $[0.50, 1.00]$ scaling per-cylinder power stroke pulse.
-  - **D2 Bearing Mechanical Degradation**: `bearing_friction_multiplier` $\ge 1.00$ modifying crankshaft dry/boundary friction without double-counting fluid viscosity friction.
-  - **D3 Cooling System Degradation**: `cooling_efficiency` $[0.50, 1.00]$ scaling cylinder head heat rejection rate $Q_{\text{cool}}$.
-  - **D4 Lubrication System Degradation**: `lubrication_efficiency` $[0.50, 1.00]$ modifying oil pump pressure capacity and oil viscosity friction factor internally.
-- **Time-Dependent Trajectories (`DegradationTrajectoryCalculator`)**: `CONSTANT`, `LINEAR`, `STEP`, `EXPONENTIAL` health degradation profiles over simulation time.
-- **Dual Ground-Truth Granularity**:
-  - `RunGroundTruth`: Scenario metadata (`run_id`, `degradation_type`, `target_component`, `max_severity`, `trajectory_type`, `seed`, `operating_profile`).
-  - `SampleGroundTruth`: Time-step metadata (`timestamp`, `simulation_time`, `degradation_type`, `target_component`, `active_severity`, `current_health`, `is_degraded`).
-  - Ground truth is stored separately and is **never** included in ML sensor input feature sets.
-- **Sliding-Window Dataset Pipeline (`DatasetBuilder`)**:
-  - 5.0s window size, 1.0s stride default (500 samples/window at 100 Hz).
-  - Time-domain feature aggregations (mean, std, min, max, rms, peak).
-  - **Run-Based Non-Leakage Partitioning**: Train / Validation / Test sets are split strictly by **simulation run IDs**, preventing window overlap leakage.
-- **Dataset CLI & Validation Tools**:
-  - [`scripts/generate_phase3_dataset.py`](file:///Users/yadnyesh8250/Desktop/Digital_Twin/scripts/generate_phase3_dataset.py): Pilot (`--pilot`) and full (`--full`) dataset generator.
-  - [`scripts/validate_phase3_dataset.py`](file:///Users/yadnyesh8250/Desktop/Digital_Twin/scripts/validate_phase3_dataset.py): Automated numerical integrity & physical causality trend validator.
+  - D1 Cylinder Combustion Degradation
+  - D2 Bearing Mechanical Friction Degradation
+  - D3 Cooling System Heat Rejection Degradation
+  - D4 Lubrication System Oil Pressure & Viscosity Degradation
+- **Time-Dependent Trajectories (`DegradationTrajectoryCalculator`)**: `CONSTANT`, `LINEAR`, `STEP`, `EXPONENTIAL` health degradation profiles.
+- **Dual Ground-Truth Granularity**: `RunGroundTruth` (scenario metadata) & `SampleGroundTruth` (timestep metadata).
+- **Sliding-Window Dataset Pipeline (`DatasetBuilder`)**: 5.0s window size, 1.0s stride default (500 samples/window at 100 Hz).
+
+---
+
+### 4. Phase 4 — Digital Twin State Engine & Residual Generation
+- **Dual-Mode Healthy State Engine (`HealthyStateModel`)**:
+  - **Mode A (Synchronized Counterfactual Twin)**: Parallel healthy simulation (`degradation=OFF`) using identical seed, initial state, $dt$, throttle trajectory, and flight profile.
+  - **Mode B (Pointwise Reference Predictor)**: Reference model mapping operating inputs to expected healthy outputs.
+- **Strict Field Separation**: Metadata fields have zero residuals calculated; physical outputs have signed and normalized residuals.
+- **Conditioned Baseline (`HealthyBaselineModel`)**: Binned interpolation across $(\text{operating\_mode}, \text{throttle}, \text{RPM})$ providing channel-level reference scales and condition-aware healthy standard deviations.
+- **Residual Engine (`ResidualGenerator`)** & **Residual Indicators (`ResidualIndicatorEngine`)**.
+
+---
+
+### 5. Phase 5 & 5.1 — Physics-Informed Anomaly Detection & Numerical Validation
+- **Strict Zero Ground-Truth Feature Leakage**: Ground-truth labels are strictly isolated for evaluation and are **NEVER** passed into ML feature matrices.
+- **Unsupervised Healthy-Only Training**: Models and scalers are fitted strictly on Healthy Training runs (`HEALTHY_001`, `HEALTHY_002`).
+- **Phase 5.1 Numerical & Scaling Fix (`FeatureScaler`)**: Enforced a `min_std = 1e-2` variance floor and feature clipping $[-20.0, +20.0]$, restoring PyTorch Autoencoder healthy reconstruction MSE loss from $10^{33}$ to **0.0173 – 0.1076**.
+- **Unseen Operating Condition Generalization**: Verified model generalization when trained on `CRUISE`/`IDLE` and tested on `TAKEOFF`/`DESCENT` (`test_profile_generalization.py`), proving the model learns **Engine Health** rather than operating profile.
+- **Three Feature Configurations (Ablation Study)**: Config A (Raw Telemetry) [136 feats], Config B (Digital Twin Residuals) [178 feats], Config C (Hybrid Physics-Informed) [314 feats].
+- **3 Unsupervised Anomaly Detectors**: Statistical Baseline, Scikit-Learn Isolation Forest, PyTorch Feed-Forward Autoencoder.
 
 ---
 
@@ -79,84 +84,76 @@ Digital_Twin/
 │
 ├── AeroTwin/
 │   ├── phase1/                        # PHASE 1: Engine Physics Subsystems
-│   │   ├── engine/
-│   │   │   ├── parameters.py          # Centralized engine parameters
-│   │   │   ├── dynamics.py            # Crankshaft rotational dynamics solver
-│   │   │   ├── cylinders.py           # 4-cylinder 720° combustion pulse model
-│   │   │   ├── thermal.py             # Lumped CHT/EGT/Oil thermal model
-│   │   │   ├── lubrication.py         # Oil pump & pressure/viscosity model
-│   │   │   ├── fuel.py                # BSFC fuel flow & pressure model
-│   │   │   └── vibration.py           # Torque fluctuation vibration model
-│   │   └── tests/                     # 23 Phase 1 unit tests
-│   │
 │   ├── simulator/                     # PHASE 2: Real-Time Engine Runtime
-│   │   ├── clock.py                   # SimulationClock (t, dt)
-│   │   ├── runner.py                  # EngineRunner state machine & real-time pacing
-│   │   ├── scenarios/                 # Operating modes (IDLE..DESCENT) & FlightProfile
-│   │   ├── telemetry/                 # Canonical EngineTelemetry schema & exporter
-│   │   ├── benchmark.py               # Throughput latency benchmark utility
-│   │   └── tests/                     # 13 Phase 2 unit tests
-│   │
-│   └── degradation/                   # PHASE 3: Degradation Physics & Dataset
-│       ├── config.py                  # DegradationConfig, Severity, Component enums
-│       ├── mechanisms.py              # D1-D4 physical parameter mapper
-│       ├── trajectory.py              # CONSTANT, LINEAR, STEP, EXPONENTIAL profiles
-│       ├── ground_truth.py            # Dual RunGroundTruth & SampleGroundTruth
-│       ├── injector.py                # DegradationInjector step-by-step runner wrapper
-│       ├── dataset.py                 # SlidingWindowGenerator & DatasetBuilder
-│       ├── validators.py              # Physical causality & non-leakage validator
-│       └── tests/                     # 11 Phase 3 unit tests
+│   ├── degradation/                   # PHASE 3: Degradation Physics & Dataset
+│   ├── health/                        # PHASE 4: Digital Twin State Engine & Residuals
+│   └── ml/                            # PHASE 5 & 5.1: Physics-Informed Anomaly Detection
+│       └── anomaly/
+│           ├── features.py            # Feature extractors (Raw, Residuals, Hybrid)
+│           ├── preprocessing.py       # Fit-on-train-only FeatureScaler (min_std + clip)
+│           ├── splits.py              # Run-based non-leakage RunSplitter
+│           ├── statistical.py         # Model 1: Statistical Baseline Detector
+│           ├── isolation_forest.py    # Model 2: Isolation Forest Detector
+│           ├── autoencoder.py         # Model 3: PyTorch Autoencoder Detector
+│           ├── scoring.py             # Common AnomalyScorer interface
+│           ├── evaluation.py          # Evaluator engine (Precision, Recall, F1, ROC-AUC)
+│           └── tests/                 # 11 Phase 5 & 5.1 unit tests
 │
 ├── scripts/
-│   ├── generate_phase3_dataset.py     # Pilot & Full dataset generation CLI
-│   └── validate_phase3_dataset.py     # Dataset causality & integrity validator CLI
+│   ├── inspect_phase5_features.py     # Feature scaling inspection audit CLI
+│   ├── build_phase5_features.py       # Feature matrix builder CLI
+│   ├── train_phase5_anomaly_models.py # Model trainer CLI
+│   ├── evaluate_phase5_models.py      # Scientific ablation evaluator CLI
+│   └── plot_phase5_results.py         # 10 visual comparison plot generator CLI
 │
 ├── data/
 │   └── generated/
-│       ├── telemetry_run.csv          # Phase 2 flight scenario telemetry run
-│       └── phase3/
-│           ├── pilot/                 # 5 pilot simulation run datasets
-│           └── full/                  # 23 full simulation run datasets (raw & windows)
+│       ├── phase3/                    # Raw telemetry & window datasets
+│       ├── phase4/                    # Derived residual datasets
+│       └── phase5/                    # Feature matrices, predictions, & ablation matrix
+│
+├── models/
+│   └── phase5/                        # Scalers, Statistical, IForest, and Autoencoder artifacts
 │
 └── docs/
-    ├── PHASE_3_SPEC.md                # Phase 3 technical specification
-    ├── PHASE_3_DATASET.md             # Phase 3 dataset layout & feature spec
-    └── PHASE_3_PHYSICS.md             # Phase 3 phenomenological severity mapping spec
+    ├── PHASE_5_SPEC.md                # Phase 5 specification
+    ├── PHASE_5_VALIDATION.md          # Phase 5.1 scientific ablation study & numerical audit
+    └── plots/                         # Visual validation plots
 ```
 
 ---
 
 ## 🚀 Execution & Verification Commands
 
-### 1. Run Complete Automated Test Suite (47/47 Passed)
+### 1. Run Complete Automated Test Suite (70/70 Passed)
 ```bash
-.venv/bin/pytest AeroTwin/phase1/tests/ AeroTwin/simulator/tests/ AeroTwin/degradation/tests/ -v
+.venv/bin/pytest AeroTwin/phase1/tests/ \
+                  AeroTwin/simulator/tests/ \
+                  AeroTwin/degradation/tests/ \
+                  AeroTwin/health/tests/ \
+                  AeroTwin/ml/anomaly/tests/ -v
 ```
 
-### 2. Run Real-Time Engine Simulator & Benchmark
+### 2. Inspect Feature Scaling Audit (Zero Explosions)
 ```bash
-.venv/bin/python AeroTwin/simulator/main.py
+.venv/bin/python scripts/inspect_phase5_features.py
 ```
 
-### 3. Generate Deterministic Pilot Dataset
+### 3. Build Phase 5 Features & Train Models
 ```bash
-.venv/bin/python scripts/generate_phase3_dataset.py --pilot
+.venv/bin/python scripts/build_phase5_features.py
+.venv/bin/python scripts/train_phase5_anomaly_models.py
 ```
 
-### 4. Validate Generated Dataset
+### 4. Run Scientific Ablation Evaluation & Generate Plots
 ```bash
-.venv/bin/python scripts/validate_phase3_dataset.py data/generated/phase3/pilot
-```
-
-### 5. Generate Full Phase 3 Dataset
-```bash
-.venv/bin/python scripts/generate_phase3_dataset.py --full
-.venv/bin/python scripts/validate_phase3_dataset.py data/generated/phase3/full
+.venv/bin/python scripts/evaluate_phase5_models.py
+.venv/bin/python scripts/plot_phase5_results.py
 ```
 
 ---
 
 ## ⚠️ Engineering Disclaimer
 
-Mappings from degradation severity $S \in [0.0, 1.0]$ to physical parameters are **phenomenological reduced-order prototype simulation assumptions**.
+Mappings from degradation severity $S \in [0.0, 1.0]$ to physical parameters and calculated residuals represent **phenomenological reduced-order Digital Twin estimations**.
 Passing unit tests and causality checks confirms **mathematical and physical self-consistency** within the model equations, but does not constitute empirical validation against classified or proprietary UAV engine test cell data.
