@@ -15,8 +15,8 @@ for _p in [_health_dir, _aerotwin_dir, _root_dir]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from health.indicators import ResidualIndicatorEngine
-from health.models import ResidualState
+from AeroTwin.health.indicators import ResidualIndicatorEngine
+from AeroTwin.health.models import ResidualState
 
 
 class TestIndicators(unittest.TestCase):

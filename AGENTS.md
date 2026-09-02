@@ -225,77 +225,56 @@ Deliver:
 - state estimation
 - confidence
 
-## Phase 5 — Real-Time Telemetry
+## Phase 5 — AI Anomaly Detection & ML Feature Engineering
 Deliver:
-- FastAPI
-- WebSocket
-- telemetry stream
-- historical storage
-- simulation clock
-- live Digital Twin state
+- feature extraction (RAW, RESIDUAL, HYBRID)
+- run-based non-leakage train/val/test splitter
+- healthy-only unsupervised scalers & detectors
+- Statistical Baseline, Isolation Forest, PyTorch Autoencoder
+- decision threshold derivation (FPR <= 5%)
+- scientific ablation matrix & validation plots
 
-## Phase 6 — AI Anomaly Detection
+## Phase 6 — Supervised Fault Diagnosis & Component Identification
 Deliver:
-- feature engineering
-- baseline normal behavior
-- anomaly detector
-- anomaly score
-- threshold strategy
-- validation metrics
+- 6-class target definition (HEALTHY, CYLINDER_1, CYLINDER_3, BEARING, COOLING, LUBRICATION)
+- severity-based run partitioning (SEV020/040 -> SEV060 -> SEV080)
+- zero ground-truth feature leakage assertions
+- fault-specific signatures (cylinder balance, thermal, lubrication, bearing)
+- 4 diagnostic models (Physics Rule Baseline, Random Forest, HistGradientBoosting, PyTorch MLP)
+- FaultDiagnosis output contract & confidence probabilities
+- Experiment A & B 6x6 confusion matrices & per-class precision/recall
 
-## Phase 7 — Fault Diagnosis
+## Phase 7 — Remaining Useful Life (RUL) & Health Estimation
 Deliver:
-- multi-class fault model
-- fault probabilities
-- confusion matrix
-- precision/recall/F1
-- explainability
-
-## Phase 8 — RUL Prediction
-Deliver:
-- degradation trajectory
-- RUL model
-- uncertainty interval
+- degradation trajectory estimation
+- RUL prediction models
+- uncertainty interval bounds
 - evaluation against held-out degradation runs
-- avoid unsupported precision
 
-## Phase 9 — Maintenance + Mission Risk
+## Phase 8 — Maintenance & Mission Risk
 Deliver:
-- maintenance recommendation
-- mission-duration comparison
-- RUL vs mission requirement
-- risk score
-- decision explanation
+- maintenance recommendation engine
+- mission-duration safety comparison
+- risk score calculation
 
-## Phase 10 — 3D Engine
+## Phase 9 — Explainable AI (XAI / SHAP)
 Deliver:
-- representative 4-cylinder engine
-- piston/crank animation
-- component state mapping
-- health visualization
-- fault highlighting
-- RPM-synchronized animation
+- SHAP feature importance analysis
+- physics-informed decision explanations
+
+## Phase 10 — 3D Engine & Visualization
+Deliver:
+- representative 4-cylinder engine 3D view
+- piston/crank RPM-synchronized animation
+- component health mapping & fault highlighting
 
 ## Phase 11 — React Dashboard
 Deliver:
-- 3D viewport
-- telemetry charts
-- engine health
-- fault diagnosis
-- RUL
-- mission risk
-- maintenance recommendation
-- event timeline
+- 3D viewport, telemetry charts, fault diagnosis, RUL, mission risk
 
 ## Phase 12 — Integration + Validation + SIH Demo
 Deliver:
-- end-to-end system
-- reproducible demo scenarios
-- validation report
-- performance testing
-- documentation
-- architecture diagram
-- demo script
+- end-to-end system demo scenarios, performance testing, validation report
 
 ---
 

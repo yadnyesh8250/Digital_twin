@@ -1,0 +1,1166 @@
+[
+  {
+    "feature_config": "RAW",
+    "model_name": "rule_baseline",
+    "exp_a_degraded_macro_f1": 0.0,
+    "exp_a_degraded_accuracy": 0.0,
+    "exp_b_full_macro_f1": 0.027777777777777776,
+    "exp_b_full_accuracy": 0.09090909090909091,
+    "exp_b_full_weighted_f1": 0.01515151515151515,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 0.09090909090909091,
+        "recall": 1.0,
+        "f1_score": 0.16666666666666666,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        56,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        56,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        56,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        56,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        56,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "feature_config": "RAW",
+    "model_name": "random_forest",
+    "exp_a_degraded_macro_f1": 0.9749620614942799,
+    "exp_a_degraded_accuracy": 0.975,
+    "exp_b_full_macro_f1": 0.9791350512452333,
+    "exp_b_full_accuracy": 0.9772727272727273,
+    "exp_b_full_weighted_f1": 0.9772382377220726,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 0.9642857142857143,
+        "f1_score": 0.9818181818181818,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 0.9655172413793104,
+        "recall": 1.0,
+        "f1_score": 0.9824561403508771,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 0.9180327868852459,
+        "recall": 1.0,
+        "f1_score": 0.9572649572649573,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 0.9107142857142857,
+        "f1_score": 0.9532710280373832,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        54,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        5,
+        0,
+        51
+      ]
+    ]
+  },
+  {
+    "feature_config": "RAW",
+    "model_name": "gradient_boosting",
+    "exp_a_degraded_macro_f1": 0.9749500758846553,
+    "exp_a_degraded_accuracy": 0.975,
+    "exp_b_full_macro_f1": 0.9791250632372127,
+    "exp_b_full_accuracy": 0.9772727272727273,
+    "exp_b_full_weighted_f1": 0.977227341713323,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 0.9016393442622951,
+        "recall": 0.9821428571428571,
+        "f1_score": 0.9401709401709402,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 0.9803921568627451,
+        "recall": 0.8928571428571429,
+        "f1_score": 0.9345794392523364,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        55,
+        1,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        6,
+        50,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        56
+      ]
+    ]
+  },
+  {
+    "feature_config": "RAW",
+    "model_name": "pytorch_mlp",
+    "exp_a_degraded_macro_f1": 1.0,
+    "exp_a_degraded_accuracy": 1.0,
+    "exp_b_full_macro_f1": 1.0,
+    "exp_b_full_accuracy": 1.0,
+    "exp_b_full_weighted_f1": 1.0,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        56,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        56
+      ]
+    ]
+  },
+  {
+    "feature_config": "RESIDUAL",
+    "model_name": "rule_baseline",
+    "exp_a_degraded_macro_f1": 0.4830974332337792,
+    "exp_a_degraded_accuracy": 0.5714285714285714,
+    "exp_b_full_macro_f1": 0.5737123199651707,
+    "exp_b_full_accuracy": 0.6103896103896104,
+    "exp_b_full_weighted_f1": 0.5764416835630635,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 0.37333333333333335,
+        "recall": 1.0,
+        "f1_score": 0.5436893203883495,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 0.8214285714285714,
+        "f1_score": 0.9019607843137255,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 1.0,
+        "recall": 0.8214285714285714,
+        "f1_score": 0.9019607843137255,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 0.5894736842105263,
+        "recall": 1.0,
+        "f1_score": 0.7417218543046358,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 0.21428571428571427,
+        "f1_score": 0.35294117647058826,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        46,
+        0,
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        46,
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        10,
+        0,
+        0,
+        0,
+        12,
+        34
+      ],
+      [
+        37,
+        0,
+        0,
+        19,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "feature_config": "RESIDUAL",
+    "model_name": "random_forest",
+    "exp_a_degraded_macro_f1": 0.9749019607843138,
+    "exp_a_degraded_accuracy": 0.975,
+    "exp_b_full_macro_f1": 0.9790849673202615,
+    "exp_b_full_accuracy": 0.9772727272727273,
+    "exp_b_full_weighted_f1": 0.9771836007130124,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 0.8888888888888888,
+        "recall": 1.0,
+        "f1_score": 0.9411764705882353,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 0.875,
+        "f1_score": 0.9333333333333333,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        56,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        7,
+        0,
+        49
+      ]
+    ]
+  },
+  {
+    "feature_config": "RESIDUAL",
+    "model_name": "gradient_boosting",
+    "exp_a_degraded_macro_f1": 0.97525313608876,
+    "exp_a_degraded_accuracy": 0.975,
+    "exp_b_full_macro_f1": 0.9793776134073,
+    "exp_b_full_accuracy": 0.9772727272727273,
+    "exp_b_full_weighted_f1": 0.9775028509897818,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 0.9642857142857143,
+        "f1_score": 0.9818181818181818,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 0.8888888888888888,
+        "recall": 1.0,
+        "f1_score": 0.9411764705882353,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 1.0,
+        "recall": 0.9107142857142857,
+        "f1_score": 0.9532710280373832,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        54,
+        2,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        5,
+        51,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        56
+      ]
+    ]
+  },
+  {
+    "feature_config": "RESIDUAL",
+    "model_name": "pytorch_mlp",
+    "exp_a_degraded_macro_f1": 1.0,
+    "exp_a_degraded_accuracy": 1.0,
+    "exp_b_full_macro_f1": 1.0,
+    "exp_b_full_accuracy": 1.0,
+    "exp_b_full_weighted_f1": 1.0,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        56,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        56
+      ]
+    ]
+  },
+  {
+    "feature_config": "HYBRID",
+    "model_name": "rule_baseline",
+    "exp_a_degraded_macro_f1": 0.4830974332337792,
+    "exp_a_degraded_accuracy": 0.5714285714285714,
+    "exp_b_full_macro_f1": 0.5737123199651707,
+    "exp_b_full_accuracy": 0.6103896103896104,
+    "exp_b_full_weighted_f1": 0.5764416835630635,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 0.37333333333333335,
+        "recall": 1.0,
+        "f1_score": 0.5436893203883495,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 0.8214285714285714,
+        "f1_score": 0.9019607843137255,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 1.0,
+        "recall": 0.8214285714285714,
+        "f1_score": 0.9019607843137255,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 0.5894736842105263,
+        "recall": 1.0,
+        "f1_score": 0.7417218543046358,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 0.21428571428571427,
+        "f1_score": 0.35294117647058826,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 0.0,
+        "recall": 0.0,
+        "f1_score": 0.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        46,
+        0,
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        46,
+        10,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        10,
+        0,
+        0,
+        0,
+        12,
+        34
+      ],
+      [
+        37,
+        0,
+        0,
+        19,
+        0,
+        0
+      ]
+    ]
+  },
+  {
+    "feature_config": "HYBRID",
+    "model_name": "random_forest",
+    "exp_a_degraded_macro_f1": 0.9821071970604681,
+    "exp_a_degraded_accuracy": 0.9821428571428571,
+    "exp_b_full_macro_f1": 0.9850893308837234,
+    "exp_b_full_accuracy": 0.9837662337662337,
+    "exp_b_full_weighted_f1": 0.9837338155095166,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 0.9180327868852459,
+        "recall": 1.0,
+        "f1_score": 0.9572649572649573,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 0.9107142857142857,
+        "f1_score": 0.9532710280373832,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        56,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        5,
+        0,
+        51
+      ]
+    ]
+  },
+  {
+    "feature_config": "HYBRID",
+    "model_name": "gradient_boosting",
+    "exp_a_degraded_macro_f1": 0.989278021539689,
+    "exp_a_degraded_accuracy": 0.9892857142857143,
+    "exp_b_full_macro_f1": 0.9910650179497408,
+    "exp_b_full_accuracy": 0.9902597402597403,
+    "exp_b_full_weighted_f1": 0.9902527468542626,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 0.9464285714285714,
+        "f1_score": 0.9724770642201835,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 0.9491525423728814,
+        "recall": 1.0,
+        "f1_score": 0.9739130434782609,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        53,
+        3,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        56
+      ]
+    ]
+  },
+  {
+    "feature_config": "HYBRID",
+    "model_name": "pytorch_mlp",
+    "exp_a_degraded_macro_f1": 1.0,
+    "exp_a_degraded_accuracy": 1.0,
+    "exp_b_full_macro_f1": 1.0,
+    "exp_b_full_accuracy": 1.0,
+    "exp_b_full_weighted_f1": 1.0,
+    "per_class": {
+      "HEALTHY": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 28
+      },
+      "CYLINDER_1": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "CYLINDER_3": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "BEARING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "COOLING": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      },
+      "LUBRICATION": {
+        "precision": 1.0,
+        "recall": 1.0,
+        "f1_score": 1.0,
+        "support": 56
+      }
+    },
+    "confusion_matrix": [
+      [
+        28,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        56,
+        0,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        56,
+        0,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        56,
+        0,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        56,
+        0
+      ],
+      [
+        0,
+        0,
+        0,
+        0,
+        0,
+        56
+      ]
+    ]
+  }
+]

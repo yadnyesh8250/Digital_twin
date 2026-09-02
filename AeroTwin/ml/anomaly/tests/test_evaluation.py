@@ -28,7 +28,7 @@ class TestEvaluation(unittest.TestCase):
         y_pred = np.array([False, False, True, True, False])
         y_scores = np.array([0.1, 0.2, 0.8, 0.9, 0.4])
 
-        res = Evaluator.evaluate_predictions(y_true, y_pred, y_scores)
+        res = Evaluator.calculate_metrics(y_true, y_pred, y_scores)
 
         self.assertEqual(res["tp"], 2)
         self.assertEqual(res["fn"], 1)

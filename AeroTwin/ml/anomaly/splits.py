@@ -4,7 +4,7 @@ AeroTwin-4 Run-Based Splitter.
 Partition dataset by RUN IDs to guarantee ZERO window-level overlap leakage across partitions.
 """
 
-from typing import Dict, List, Set, Tuple
+from typing import Dict, List, Set, Tuple, Optional
 import pandas as pd
 
 
@@ -28,9 +28,15 @@ class RunSplitter:
     Splits feature and metadata matrices strictly by run IDs.
     """
 
-    def __init__(self, train_runs: List[str] = None, val_runs: List[str] = None):
+    def __init__(
+        self,
+        train_runs: Optional[List[str]] = None,
+        val_runs: Optional[List[str]] = None,
+        test_runs: Optional[List[str]] = None,
+    ):
         self.train_runs = list(train_runs) if train_runs is not None else list(DEFAULT_TRAIN_RUNS)
         self.val_runs = list(val_runs) if val_runs is not None else list(DEFAULT_VALIDATION_RUNS)
+        self.test_runs = list(test_runs) if test_runs is not None else []
         
         # Verify no intersection between train and validation run IDs
         train_set = set(self.train_runs)

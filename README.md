@@ -13,11 +13,12 @@
 | **Phase 3** | Degradation Physics & Ground-Truth Dataset Pipeline | **LOCKED** ✅ | 11 / 11 Tests Passed |
 | **Phase 4** | Digital Twin State Engine & Residual Generation | **LOCKED** ✅ | 12 / 12 Tests Passed |
 | **Phase 5 & 5.1** | Physics-Informed Anomaly Detection & Numerical Validation | **LOCKED** ✅ | 11 / 11 Tests Passed |
-| **Total** | Integrated Test Suite Baseline | **LOCKED** ✅ | **70 / 70 Tests Passed (100%)** |
+| **Phase 6** | Supervised Fault Diagnosis & Component Identification | **LOCKED** ✅ | 11 / 11 Tests Passed |
+| **Total** | Integrated Test Suite Baseline | **LOCKED** ✅ | **81 / 81 Tests Passed (100%)** |
 
 ---
 
-## 🛠️ Implemented Functionalities (Phases 1–5.1)
+## 🛠️ Implemented Functionalities (Phases 1–6)
 
 ### 1. Phase 1 — Engine Mathematical Model & Subsystems
 - **Crankshaft Rotational Dynamics**: Rotational dynamics differential equation:
@@ -69,8 +70,16 @@
 - **Unsupervised Healthy-Only Training**: Models and scalers are fitted strictly on Healthy Training runs (`HEALTHY_001`, `HEALTHY_002`).
 - **Phase 5.1 Numerical & Scaling Fix (`FeatureScaler`)**: Enforced a `min_std = 1e-2` variance floor and feature clipping $[-20.0, +20.0]$, restoring PyTorch Autoencoder healthy reconstruction MSE loss from $10^{33}$ to **0.0173 – 0.1076**.
 - **Unseen Operating Condition Generalization**: Verified model generalization when trained on `CRUISE`/`IDLE` and tested on `TAKEOFF`/`DESCENT` (`test_profile_generalization.py`), proving the model learns **Engine Health** rather than operating profile.
-- **Three Feature Configurations (Ablation Study)**: Config A (Raw Telemetry) [136 feats], Config B (Digital Twin Residuals) [178 feats], Config C (Hybrid Physics-Informed) [314 feats].
 - **3 Unsupervised Anomaly Detectors**: Statistical Baseline, Scikit-Learn Isolation Forest, PyTorch Feed-Forward Autoencoder.
+
+---
+
+### 6. Phase 6 — Supervised Fault Diagnosis & Component Identification
+- **Component-Level Fault Diagnosis**: Given an anomalous engine window (gated by Phase 5), Phase 6 identifies the degraded component (`HEALTHY`, `CYLINDER_1`, `CYLINDER_3`, `BEARING`, `COOLING`, `LUBRICATION`).
+- **Phase 5 Anomaly Gating**: Phase 5 output acts strictly as a gate (`NORMAL` -> stop; `ANOMALOUS` -> trigger Phase 6). Phase 5 `anomaly_score` is **NEVER** fed into Phase 6 feature matrix $X$.
+- **Severity Partitioning (`SEV020/040` -> `SEV060` -> `SEV080`)**: Trained strictly on lower/medium severities (`SEV020`, `SEV040`) and evaluated on unseen `SEV080` test runs.
+- **4 Diagnostic Models**: Physics Rule Baseline, Scikit-Learn Random Forest, HistGradientBoosting (with `class_weight="balanced"`), PyTorch Supervised MLP.
+- **Canonical Output Contract (`FaultDiagnosis`)**: Returns `predicted_fault`, `confidence`, and class `probabilities`.
 
 ---
 
@@ -87,37 +96,40 @@ Digital_Twin/
 │   ├── simulator/                     # PHASE 2: Real-Time Engine Runtime
 │   ├── degradation/                   # PHASE 3: Degradation Physics & Dataset
 │   ├── health/                        # PHASE 4: Digital Twin State Engine & Residuals
-│   └── ml/                            # PHASE 5 & 5.1: Physics-Informed Anomaly Detection
-│       └── anomaly/
-│           ├── features.py            # Feature extractors (Raw, Residuals, Hybrid)
-│           ├── preprocessing.py       # Fit-on-train-only FeatureScaler (min_std + clip)
-│           ├── splits.py              # Run-based non-leakage RunSplitter
-│           ├── statistical.py         # Model 1: Statistical Baseline Detector
-│           ├── isolation_forest.py    # Model 2: Isolation Forest Detector
-│           ├── autoencoder.py         # Model 3: PyTorch Autoencoder Detector
-│           ├── scoring.py             # Common AnomalyScorer interface
-│           ├── evaluation.py          # Evaluator engine (Precision, Recall, F1, ROC-AUC)
-│           └── tests/                 # 11 Phase 5 & 5.1 unit tests
+│   ├── ml/
+│   │   ├── anomaly/                   # PHASE 5: Physics-Informed Anomaly Detection
+│   │   └── diagnosis/                 # PHASE 6: Supervised Fault Diagnosis
+│   │       ├── labels.py              # 6 FaultClass Enum & mapping utilities
+│   │       ├── features.py            # FeatureExtractor (Raw, Residual, Hybrid + signatures)
+│   │       ├── preprocessing.py       # FeatureScaler (fit-on-train-only, min_std, clip)
+│   │       ├── splits.py              # SeverityRunSplitter (Train: SEV020/040, Val: 060, Test: 080)
+│   │       ├── baselines.py           # Model 1: Physics Rule Baseline
+│   │       ├── random_forest.py       # Model 2: RandomForestClassifier
+│   │       ├── gradient_boosting.py  # Model 3: HistGradientBoostingClassifier
+│   │       ├── neural_network.py      # Model 4: PyTorch Supervised MLP
+│   │       ├── scoring.py             # FaultDiagnosis contract & DiagnosisScorer
+│   │       ├── evaluation.py          # Evaluator (Confusion matrix 6x6, Macro F1)
+│   │       └── tests/                 # 11 Phase 6 unit tests
 │
 ├── scripts/
-│   ├── inspect_phase5_features.py     # Feature scaling inspection audit CLI
-│   ├── build_phase5_features.py       # Feature matrix builder CLI
-│   ├── train_phase5_anomaly_models.py # Model trainer CLI
-│   ├── evaluate_phase5_models.py      # Scientific ablation evaluator CLI
-│   └── plot_phase5_results.py         # 10 visual comparison plot generator CLI
+│   ├── build_phase6_features.py       # Feature matrix builder CLI
+│   ├── train_phase6_models.py         # Model trainer CLI
+│   ├── evaluate_phase6_models.py      # Scientific ablation evaluator CLI
+│   └── plot_phase6_results.py         # 5 visual plot generator CLI
 │
 ├── data/
 │   └── generated/
 │       ├── phase3/                    # Raw telemetry & window datasets
 │       ├── phase4/                    # Derived residual datasets
-│       └── phase5/                    # Feature matrices, predictions, & ablation matrix
+│       ├── phase5/                    # Phase 5 feature matrices & predictions
+│       └── phase6/                    # Phase 6 feature matrices, predictions, & ablation matrix
 │
 ├── models/
-│   └── phase5/                        # Scalers, Statistical, IForest, and Autoencoder artifacts
+│   └── phase6/                        # Scalers, Baseline, RandomForest, GBoost, and MLP artifacts
 │
 └── docs/
-    ├── PHASE_5_SPEC.md                # Phase 5 specification
-    ├── PHASE_5_VALIDATION.md          # Phase 5.1 scientific ablation study & numerical audit
+    ├── PHASE_6_SPEC.md                # Phase 6 specification
+    ├── PHASE_6_VALIDATION.md          # Phase 6 scientific ablation study & validation report
     └── plots/                         # Visual validation plots
 ```
 
@@ -125,30 +137,26 @@ Digital_Twin/
 
 ## 🚀 Execution & Verification Commands
 
-### 1. Run Complete Automated Test Suite (70/70 Passed)
+### 1. Run Complete Integrated Test Suite (81/81 Passed)
 ```bash
 .venv/bin/pytest AeroTwin/phase1/tests/ \
                   AeroTwin/simulator/tests/ \
                   AeroTwin/degradation/tests/ \
                   AeroTwin/health/tests/ \
-                  AeroTwin/ml/anomaly/tests/ -v
+                  AeroTwin/ml/anomaly/tests/ \
+                  AeroTwin/ml/diagnosis/tests/ -v
 ```
 
-### 2. Inspect Feature Scaling Audit (Zero Explosions)
+### 2. Build Phase 6 Features & Train Diagnostic Models
 ```bash
-.venv/bin/python scripts/inspect_phase5_features.py
+.venv/bin/python scripts/build_phase6_features.py
+.venv/bin/python scripts/train_phase6_models.py
 ```
 
-### 3. Build Phase 5 Features & Train Models
+### 3. Run Scientific Ablation Evaluation & Generate Plots
 ```bash
-.venv/bin/python scripts/build_phase5_features.py
-.venv/bin/python scripts/train_phase5_anomaly_models.py
-```
-
-### 4. Run Scientific Ablation Evaluation & Generate Plots
-```bash
-.venv/bin/python scripts/evaluate_phase5_models.py
-.venv/bin/python scripts/plot_phase5_results.py
+.venv/bin/python scripts/evaluate_phase6_models.py
+.venv/bin/python scripts/plot_phase6_results.py
 ```
 
 ---

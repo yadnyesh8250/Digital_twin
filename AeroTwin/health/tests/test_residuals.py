@@ -15,8 +15,8 @@ for _p in [_health_dir, _aerotwin_dir, _root_dir]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from health.residuals import ResidualGenerator
-from health.models import ExpectedState, OperatingState, ResidualState
+from AeroTwin.health.residuals import ResidualGenerator
+from AeroTwin.health.models import ExpectedState, OperatingState, ResidualState
 
 
 class TestResiduals(unittest.TestCase):

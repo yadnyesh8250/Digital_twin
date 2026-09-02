@@ -15,8 +15,8 @@ for _p in [_health_dir, _aerotwin_dir, _root_dir]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from health.operating_state import OperatingStateExtractor
-from health.models import OperatingState
+from AeroTwin.health.operating_state import OperatingStateExtractor
+from AeroTwin.health.models import OperatingState
 
 
 class TestOperatingStateSchema(unittest.TestCase):

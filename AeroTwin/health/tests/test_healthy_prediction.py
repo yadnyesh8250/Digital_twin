@@ -15,8 +15,8 @@ for _p in [_health_dir, _aerotwin_dir, _root_dir]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from health.healthy_state import HealthyStateModel
-from health.models import OperatingState, ExpectedState
+from AeroTwin.health.healthy_state import HealthyStateModel
+from AeroTwin.health.models import OperatingState, ExpectedState
 
 
 class TestHealthyPrediction(unittest.TestCase):

@@ -25,15 +25,16 @@ class Evaluator:
     """
 
     @staticmethod
-    def evaluate_predictions(
+    def calculate_metrics(
         y_true: np.ndarray,
         y_pred: np.ndarray,
-        y_scores: np.ndarray,
+        y_scores: Optional[np.ndarray] = None,
         meta_df: Optional[pd.DataFrame] = None,
     ) -> Dict[str, Any]:
         """
-        Compute window-level classification and ranking metrics.
+        Calculate precision, recall, f1, fpr, and optional ROC-AUC metrics.
         """
+        results: Dict[str, Any] = {}
         y_true = np.array(y_true, dtype=bool)
         y_pred = np.array(y_pred, dtype=bool)
         y_scores = np.array(y_scores, dtype=float)

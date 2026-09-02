@@ -66,7 +66,7 @@ class AutoencoderAnomalyDetector:
 
         self.net: Optional[AutoencoderNet] = None
         self.input_dim: int = 0
-        self.feature_names: Optional[list] = None
+        self.feature_names: List[str] = []
         self.threshold: float = 0.5
         self.is_fitted: bool = False
 
@@ -94,8 +94,6 @@ class AutoencoderAnomalyDetector:
         self.net.train()
         for epoch in range(self.epochs):
             permutation = torch.randperm(tensor_train.size(0))
-            epoch_loss = 0.0
-            num_batches = 0
 
             for i in range(0, tensor_train.size(0), self.batch_size):
                 indices = permutation[i : i + self.batch_size]
@@ -107,14 +105,9 @@ class AutoencoderAnomalyDetector:
                 loss.backward()
                 optimizer.step()
 
-                epoch_loss += loss.item()
-                num_batches += 1
-
-            avg_loss = epoch_loss / max(1, num_batches)
-
             # Early stopping check if val set provided
             if X_val_healthy is not None:
-                val_mat = X_val_healthy[self.feature_names].values if isinstance(X_val_healthy, pd.DataFrame) else np.array(X_val_healthy)
+                val_mat = X_val_healthy[self.feature_names].values if (isinstance(X_val_healthy, pd.DataFrame) and len(self.feature_names) > 0) else np.array(X_val_healthy)
                 tensor_val = torch.tensor(val_mat, dtype=torch.float32)
                 self.net.eval()
                 with torch.no_grad():
@@ -142,7 +135,7 @@ class AutoencoderAnomalyDetector:
         if not self.is_fitted or self.net is None:
             raise RuntimeError("AutoencoderAnomalyDetector is not fitted!")
 
-        X_mat = X[self.feature_names].values if isinstance(X, pd.DataFrame) else np.array(X)
+        X_mat = X[self.feature_names].values if (isinstance(X, pd.DataFrame) and len(self.feature_names) > 0) else np.array(X)
         tensor_x = torch.tensor(X_mat, dtype=torch.float32)
 
         self.net.eval()
@@ -178,7 +171,8 @@ class AutoencoderAnomalyDetector:
         weights_path = os.path.join(model_dir, "autoencoder_weights.pt")
         config_path = os.path.join(model_dir, "autoencoder_config.json")
 
-        torch.save(self.net.state_dict(), weights_path)
+        if self.net is not None:
+            torch.save(self.net.state_dict(), weights_path)
         config = {
             "input_dim": self.input_dim,
             "hidden_dim1": self.hidden_dim1,

@@ -79,10 +79,11 @@ class StatisticalAnomalyDetector:
             os.makedirs(dirpath, exist_ok=True)
             
         data = {
-            "mean": self.mean_vector.tolist(),
-            "std": self.std_vector.tolist(),
+            "mean_vec": self.mean_vector.tolist() if self.mean_vector is not None else [],
+            "std_vec": self.std_vector.tolist() if self.std_vector is not None else [],
             "feature_names": self.feature_names,
             "threshold": self.threshold,
+            "is_fitted": self.is_fitted,
         }
         with open(filepath, "w") as f:
             json.dump(data, f, indent=2)

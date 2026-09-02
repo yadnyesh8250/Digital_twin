@@ -16,10 +16,10 @@ for _p in [_health_dir, _aerotwin_dir, _root_dir]:
     if _p not in sys.path:
         sys.path.insert(0, _p)
 
-from simulator.runner import EngineRunner
-from degradation.config import DegradationConfig, DegradationType, ComponentID
-from degradation.injector import DegradationInjector
-from health.engine import DigitalTwinStateEngine
+from AeroTwin.simulator.runner import EngineRunner
+from AeroTwin.degradation.config import DegradationConfig, DegradationType, ComponentID
+from AeroTwin.degradation.injector import DegradationInjector
+from AeroTwin.health.engine import DigitalTwinStateEngine
 
 
 class TestDegradationResiduals(unittest.TestCase):

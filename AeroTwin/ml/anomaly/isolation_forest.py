@@ -5,7 +5,7 @@ Uses Scikit-Learn IsolationForest trained strictly on healthy feature vectors.
 Normalizes score direction so HIGHER score = MORE ANOMALOUS.
 """
 
-from typing import Optional, Dict, Any, Tuple
+from typing import Optional, Dict, Any, Tuple, List
 import os
 import joblib
 import numpy as np
@@ -27,7 +27,7 @@ class IsolationForestAnomalyDetector:
             contamination=self.contamination,
             random_state=self.random_state,
         )
-        self.feature_names: Optional[list] = None
+        self.feature_names: List[str] = []
         self.threshold: float = 0.5
         self.is_fitted: bool = False
 
@@ -54,7 +54,7 @@ class IsolationForestAnomalyDetector:
         if not self.is_fitted:
             raise RuntimeError("IsolationForestAnomalyDetector is not fitted!")
 
-        X_mat = X[self.feature_names].values if isinstance(X, pd.DataFrame) else np.array(X)
+        X_mat = X[self.feature_names].values if (isinstance(X, pd.DataFrame) and len(self.feature_names) > 0) else np.array(X)
         # Negate score_samples so higher score = more anomalous
         scores = -self.model.score_samples(X_mat)
         return scores
